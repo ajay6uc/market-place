@@ -37,9 +37,9 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
  */
 @Component
 @Scope("singleton")
-public class PesistenceManagerCloseFilter implements Filter {
+public class PersistenceManagerCloseFilter implements Filter {
     
-    private static final Logger logger = LoggerFactory.getLogger(PesistenceManagerCloseFilter.class);
+    private static final Logger logger = LoggerFactory.getLogger(PersistenceManagerCloseFilter.class);
     
     @SuppressWarnings("unused")
     private FilterConfig filterConfig = null;

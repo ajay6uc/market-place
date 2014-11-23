@@ -102,7 +102,7 @@ public abstract class AbstractDBService<T extends Entity> implements DBService<T
      * {@inheritDoc}
      */
     @Override
-    @JDOTransactional
+    @Transactional
     public T insert(T entity) {
         this.validateBeforeInsert(entity);
         this.beforeInsert(entity);
