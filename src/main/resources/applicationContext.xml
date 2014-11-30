@@ -18,16 +18,16 @@
     <context:annotation-config/>
     <!-- PMF Bean -->
 		<bean id="pmf" class="org.springframework.orm.jdo.LocalPersistenceManagerFactoryBean">
-		<property name="jdoProperties">
-			<props>
-				<prop key="javax.jdo.PersistenceManagerFactoryClass">org.datanucleus.api.jdo.JDOPersistenceManagerFactory</prop>
-				<prop key="javax.jdo.option.ConnectionURL">jdbc:mysql://localhost:3306/marketplace</prop>
-				<prop key="javax.jdo.option.ConnectionUserName">root</prop>
-				<prop key="javax.jdo.option.ConnectionPassword">password</prop>
-				<prop key="datanucleus.autoCreateSchema">true</prop>
-				<prop key="javax.jdo.option.ConnectionDriverName">com.mysql.jdbc.Driver</prop>
-			</props>
-		</property>
+			<property name="jdoProperties">
+				<props>
+					<prop key="javax.jdo.PersistenceManagerFactoryClass">org.datanucleus.api.jdo.JDOPersistenceManagerFactory</prop>
+					<prop key="javax.jdo.option.ConnectionURL">jdbc:mysql://localhost:3306/marketplace</prop>
+					<prop key="javax.jdo.option.ConnectionUserName">root</prop>
+					<prop key="javax.jdo.option.ConnectionPassword">password</prop>
+					<prop key="datanucleus.autoCreateSchema">true</prop>
+					<prop key="javax.jdo.option.ConnectionDriverName">com.mysql.jdbc.Driver</prop>
+				</props>
+			</property>
 		</bean>
 		<!-- Transaction Manager for PMF -->
 		<bean id="jdoTransactionManager" class="org.springframework.orm.jdo.JdoTransactionManager">
@@ -35,6 +35,50 @@
 				<ref bean="pmf"/>
 			</property>
 		</bean>
+			<!-- Shiro's main business-tier object for web-enabled applications
+         (use org.apache.shiro.web.mgt.DefaultWebSecurityManager instead when there is no web environment)-->
+		 
+	
+    <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>	 
+    <bean id="authc" class="com.marketplace.VerboseFormAuthenticationFilter">
+		 <property name="loginUrl" value="/login"/>
+		<property name="successUrl" value="/../index.html"/>
+    </bean>
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+	    <!-- Single realm app (realm configured next, below).  If you have multiple realms, use the 'realms'
+      property instead. -->
+        <property name="realm" ref="sampleRealm"/>
 		
-
+        <!-- Uncomment this next property if you want heterogenous session access or clusterable/distributable
+             sessions.  The default value is 'http' which uses the Servlet container's HttpSession as the underlying
+             Session implementation.
+        <property name="sessionMode" value="native"/> -->
+    </bean>
+	<bean id="sampleRealm" class="com.marketplace.shared.common.security.MarketplaceUserRealm"></bean>
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+    <property name="securityManager" ref="securityManager"/>
+    
+	
+    <!-- override these for application-specific URLs if you like:
+    <property name="loginUrl" value="/login.jsp"/>
+    <property name="successUrl" value="/home.jsp"/>
+    <property name="unauthorizedUrl" value="/unauthorized.jsp"/> -->
+    <!-- The 'filters' property is not necessary since any declared javax.servlet.Filter bean  -->
+    <!-- defined will be automatically acquired and available via its beanName in chain        -->
+    <!-- definitions, but you can perform instance overrides or name aliases here if you like: -->
+    <!-- <property name="filters">
+        <util:map>
+            <entry key="anAlias" value-ref="someFilter"/>
+        </util:map>
+    </property> -->
+    <property name="filterChainDefinitions">
+        <value>
+          /login = authc
+            /login/**=authc
+            /logout = logout
+			/*=authc
+        </value>
+    </property>
+</bean>
+	
 </beans>

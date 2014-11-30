@@ -24,16 +24,16 @@ public class User extends AbstractEntity implements StoreCallback {
     
     
     @Persistent
-    @Column(name = "FNAME")
-    private String fname;
+    @Column(name = "NAME")
+    private String name;
     
     @Persistent
-    @Column(name = "LNAME")
-    private String lname;
+    @Column(name = "CODE")
+    private String secretCode;
     
     @Persistent
-    @Column(name = "USERNAME")
-    private String username;
+    @Column(name = "REMEMBER_ME")
+    private boolean rememberMe;
     
     @Persistent
     @Column(name = "PASSWORD")
@@ -43,51 +43,16 @@ public class User extends AbstractEntity implements StoreCallback {
     @Column(name = "EMAIL")
     private String email;
     
+    @Persistent
+    @Column(name = "CELL_NO")
+    private String cellNo;
+    
+    
     public User() {
         super();
     }
     
-    /**
-     * @param sourceName The Source Name
-     * @param sourceId The Source Id.
-     * @param fname The First Name.
-     * @param lname The Last Name.
-     */
-    public User(String sourceName, String sourceId, String fname, String lname) {
-        this.fname = fname;
-        this.lname = lname;
-    }
-    
-    /**
-     * @return the name
-     */
-    public String getUsername() {
-        return username;
-    }
-    
-    /**
-     * @param username the name to set
-     */
-    public void setUsername(String username) {
-        this.username = username;
-    }
-    
-    public String getFname() {
-        return fname;
-    }
-    
-    public void setFname(String fname) {
-        this.fname = fname;
-    }
-    
-    public String getLname() {
-        return lname;
-    }
-    
-    public void setLname(String lname) {
-        this.lname = lname;
-    }
-    
+      
     public String getEmail() {
         return email;
     }
@@ -107,21 +72,46 @@ public class User extends AbstractEntity implements StoreCallback {
     }
     
    
-    public void merge(User u) {
-        setFname(u.getFname());
-        setLname(u.getLname());
-        setEmail(u.getEmail());
-    }
     
-    public String getDisplayFNameLName() {
-        return StringUtils.join(fname, " ", lname);
-    }
-    
-    public String getDisplayLNameFName() {
-        return String.format("%s %s", getLname(), getFname());
-    }
-    
-    @Override
+    public String getSecretCode() {
+		return secretCode;
+	}
+
+	public void setSecretCode(String secretCode) {
+		this.secretCode = secretCode;
+	}
+
+	public String getCellNo() {
+		return cellNo;
+	}
+
+	public void setCellNo(String cellNo) {
+		this.cellNo = cellNo;
+	}
+	
+	
+	public boolean isRememberMe() {
+		return rememberMe;
+	}
+
+	
+	public String getName() {
+		return name;
+	}
+
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+
+	public void setRememberMe(boolean rememberMe) {
+		this.rememberMe = rememberMe;
+	}
+
+
+
+	@Override
     public void jdoPreStore() {
         JDOInstanceCallbacksUtil.populateEntityFields(this);
     }

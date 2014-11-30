@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.shiro.authc.AuthenticationException;
@@ -17,6 +18,10 @@ import org.apache.shiro.web.util.WebUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.marketplace.shared.common.SessionProfile;
+import com.marketplace.shared.common.web.security.SessionUtil;
+
+
 public class VerboseFormAuthenticationFilter extends FormAuthenticationFilter {
 
  String loginFormUrl;
@@ -25,6 +30,20 @@ public class VerboseFormAuthenticationFilter extends FormAuthenticationFilter {
  public VerboseFormAuthenticationFilter() {
      this.loginFormUrl =  "/../login.html";
    }
+ 
+ 
+ /**
+  * {@inheritDoc}
+  */
+ @Override
+ protected boolean onLoginSuccess(AuthenticationToken token, Subject subject, ServletRequest request,
+                                  ServletResponse response) throws Exception {
+     
+	 SessionProfile profile = SessionUtil.getProfile();
+     SessionUtil.setProfile(profile);
+     super.onLoginSuccess(token, subject, request, response);
+     return true;
+ }
  
  /**
   * {@inheritDoc}
@@ -56,6 +75,21 @@ public class VerboseFormAuthenticationFilter extends FormAuthenticationFilter {
      
      return super.onAccessDenied(request, response);
  }
+ 
+ /**
+  * {@inheritDoc}
+  */
+ @Override
+ protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
+     if(isLoginRequest(request, response)){
+    	 return false;
+     }else{
+    	return  super.isAccessAllowed(request, response, mappedValue);
+     }
+ }
+ 
+ 
+ 
 protected void setFailureAttribute(ServletRequest request, AuthenticationException ae) {
 	ae.printStackTrace();
 	logger.error(ae.toString());

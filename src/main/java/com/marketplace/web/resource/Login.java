@@ -13,6 +13,8 @@ import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -21,7 +23,7 @@ import com.marketplace.service.LoginService;
 /**
  * Root resource (exposed at "myresource" path)
  */
-@Path("login")
+@Path("/login")
 @Component
 @Scope("singleton")
 public class Login {
@@ -47,20 +49,28 @@ public class Login {
      * @return String that will be returned as a text/plain response.
      * @throws IOException 
      */
-    @POST
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Produces(MediaType.TEXT_PLAIN)
-    public String login(Form form) throws IOException {
-        
-    	form.asMap();
-    	String redirectUrl = request.getParameter("redirectTo");
-        if (StringUtils.isNotBlank(redirectUrl)) {
-            response.sendRedirect(redirectUrl);
-        }
-        else {
-            response.sendRedirect("/index.html");
-        }
-    	System.out.println(login);
-    	return "Got it I am fine!";
+//    @POST
+//    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+//    @Produces(MediaType.TEXT_PLAIN)
+//    public String login(Form form) throws IOException {
+//        
+//    	form.asMap();
+//    	String redirectUrl = request.getParameter("redirectTo");
+//        if (StringUtils.isNotBlank(redirectUrl)) {
+//            response.sendRedirect(redirectUrl);
+//        }
+//        else {
+//            response.sendRedirect("/index.html");
+//        }
+//    	System.out.println(login);
+//    	return "Got it I am fine!";
+//    }
+	@POST
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public void login() {
+	//	SecurityUtils.getSubject().login(arg0);
+	//	SecurityUtils.getSubject().getSession();
+	    return;
     }
+	
 }

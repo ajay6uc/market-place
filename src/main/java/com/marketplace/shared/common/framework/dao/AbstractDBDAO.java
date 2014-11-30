@@ -52,7 +52,6 @@ public abstract class AbstractDBDAO<T extends Entity> implements DBDAO<T>, Filte
     
     private static final Long NULL_ID = -1l;
     @Autowired
-    //@Qualifier("myPmfProxy")
     protected PersistenceManagerFactory persistenceManagerFactory;
     protected PersistenceManager persistenceManager;
   //  ersistenceManagerFactoryUtils.getPersistenceManager(pmf, true);
@@ -62,7 +61,7 @@ public abstract class AbstractDBDAO<T extends Entity> implements DBDAO<T>, Filte
      * @return the persistenceManager
      */
     public PersistenceManager getPersistenceManager() {
-        this.persistenceManager =  PersistenceManagerFactoryUtils.getPersistenceManager(persistenceManagerFactory, true);
+        this.persistenceManager =  PersistenceManagerFactoryUtils.doGetPersistenceManager(persistenceManagerFactory, true);
     	// this.persistenceManager =  persistenceManagerFactory.getPersistenceManager();
     	logger.debug("Obtained PersistenceManager: {}", this.persistenceManager.toString());
         return this.persistenceManager;
