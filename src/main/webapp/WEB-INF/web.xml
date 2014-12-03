@@ -62,6 +62,10 @@
 			<param-value>com.marketplace.web.resource</param-value>
 		</init-param>
 		<init-param>
+			<param-name>jersey.config.server.provider.classnames</param-name>
+			<param-value>org.glassfish.jersey.filter.LoggingFilter;org.glassfish.jersey.media.multipart.MultiPartFeature</param-value>
+		</init-param>
+		<init-param>
 		    <param-name>jersey.config.server.provider.scanning.recursive</param-name>
 		    <param-value>false</param-value>
 		</init-param>

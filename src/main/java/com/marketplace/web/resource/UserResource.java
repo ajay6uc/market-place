@@ -1,6 +1,7 @@
 package com.marketplace.web.resource;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,6 +15,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 
 import org.apache.shiro.web.util.WebUtils;
+import org.glassfish.jersey.media.multipart.ContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataBodyPart;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataMultiPart;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 
@@ -55,6 +61,24 @@ public class UserResource extends AbstractResource<User> {
 	
 	}
     
+	@POST
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/uploaddp")
+    public User uploadDp(@FormDataParam("name") String name,
+    		@FormDataParam("subject") String subject,
+    		@FormDataParam("concept") String concept,
+    		@FormDataParam("file") InputStream file,
+    		@FormDataParam("file") FormDataContentDisposition filedata) throws IOException  {
+		
+		System.out.println (subject);
+		System.out.println (concept);
+		System.out.println (filedata);
+		return null;
+		
+	
+	}
+	
     /**
      * 
      * @param service The User Service.
