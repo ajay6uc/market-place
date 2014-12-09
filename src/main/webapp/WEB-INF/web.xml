@@ -21,6 +21,16 @@
 
    <!-- The filter-name matches name of a 'shiroFilter' bean inside applicationContext.xml -->
 	<filter>
+		<filter-name>openPersistenceManagerInView</filter-name>
+		<filter-class>org.springframework.orm.jdo.support.OpenPersistenceManagerInViewFilter</filter-class>
+	</filter>
+
+	<filter-mapping>
+        <filter-name>openPersistenceManagerInView</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    
+	<filter>
 	    <filter-name>shiroFilter</filter-name>
 	    <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
 	    <init-param>
@@ -37,14 +47,7 @@
         <dispatcher>ERROR</dispatcher>
     </filter-mapping>
 	
-    <filter>
-        <filter-name>PersistenManagerClose</filter-name>
-        <filter-class>com.marketplace.shared.common.framework.web.filter.PesistenceManagerCloseFilter</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>PersistenManagerClose</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
+	
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>     

@@ -1,5 +1,6 @@
 package com.marketplace.shared.common.framework.web;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.marketplace.shared.common.core.NullAwareBeanUtilsBean;
 import com.marketplace.shared.common.framework.entity.Entity;
 import com.marketplace.shared.common.framework.searchengine.DefaultSearchCriteria;
 import com.marketplace.shared.common.framework.searchengine.SearchCriteria;
@@ -311,6 +313,8 @@ public abstract class AbstractResource<T extends Entity> extends BaseResource im
      * 
      * @param id The id of the entity to be updated.
      * @param form capturing user input.
+     * @throws InvocationTargetException 
+     * @throws IllegalAccessException 
      * @throws JSONException If the transformer fails
      */
     /*
@@ -323,12 +327,22 @@ public abstract class AbstractResource<T extends Entity> extends BaseResource im
      * this.getTransformer().entitiesToJSON(this.getService().modify(entities)); }
      */
     
-    protected T implementModify(Long id, T entity)  {
+    protected T implementModify(Long id, T entity)   {
         LOGGER.debug("Check if this is an update request");
         
         T entityFound = find(id, entity);
+        NullAwareBeanUtilsBean nabu = new NullAwareBeanUtilsBean();
+        try {
+			nabu.copyProperties(entityFound, entity);
+		} catch (IllegalAccessException | InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         if (entity != null) {
-            return this.getService().update(entity);
+        	
+        	entityFound = this.getService().update(entityFound);
+        	LOGGER.info("Returning entity found " + entityFound);
+        	return entityFound;
         }
         
 //        
@@ -351,7 +365,7 @@ public abstract class AbstractResource<T extends Entity> extends BaseResource im
         T entityFound = null;
         
         if (id != null) {
-        	entityFound = this.getService().findById(id);
+        	return entityFound = this.getService().findById(id);
         }
         
 //        if (entity == null) {
@@ -362,7 +376,7 @@ public abstract class AbstractResource<T extends Entity> extends BaseResource im
 //            }
 //        }
         
-        return entity;
+        return entityFound;
     }
     
     /**

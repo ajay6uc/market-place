@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Form;
@@ -39,26 +40,7 @@ public class DppResource extends AbstractResource<Dpp> {
 	UserService userService;
 	
 
-	@POST
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	@Produces(MediaType.APPLICATION_JSON)
-    public User createUser(Form userForm) throws IOException  {
-		
-		
-		User user = UserTransformer.formToEntity(userForm);
-		MultivaluedMap<String, String>  userMap= userForm.asMap();
-		boolean isRegisterFlow = new Boolean(userMap.getFirst("register"));
-		userService.insert(user);
-        if (isRegisterFlow) {
-        	Map<String, String> params = new HashMap<String, String>();
-            params.put("register", isRegisterFlow+"");
-            WebUtils.issueRedirect(getRequest(), getResponse(), "/../login.html", params);
-            return null;
-        }
-		return null;
-		
 	
-	}
     
 	@POST
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -74,6 +56,27 @@ public class DppResource extends AbstractResource<Dpp> {
 		System.out.println (subject);
 		System.out.println (concept);
 		System.out.println (filedata);
+		return null;
+		
+	
+	}
+	
+	@PUT
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Produces(MediaType.APPLICATION_JSON)
+    public User createUser(Form userForm) throws IOException  {
+		
+		
+		User user = UserTransformer.formToEntity(userForm);
+		MultivaluedMap<String, String>  userMap= userForm.asMap();
+		boolean isRegisterFlow = new Boolean(userMap.getFirst("register"));
+		userService.insert(user);
+        if (isRegisterFlow) {
+        	Map<String, String> params = new HashMap<String, String>();
+            params.put("register", isRegisterFlow+"");
+            WebUtils.issueRedirect(getRequest(), getResponse(), "/../login.html", params);
+            return null;
+        }
 		return null;
 		
 	

@@ -17,7 +17,43 @@
 	<tx:annotation-driven  transaction-manager="jdoTransactionManager" />
     <context:annotation-config/>
     <!-- PMF Bean -->
-		<bean id="pmf" class="org.springframework.orm.jdo.LocalPersistenceManagerFactoryBean">
+	<!--<bean id="persistenceManagerFactoryProxy" class="org.springframework.orm.jdo.TransactionAwarePersistenceManagerFactoryProxy">
+		<property name="targetPersistenceManagerFactory">
+			<bean class="org.springframework.orm.jdo.LocalPersistenceManagerFactoryBean">
+				<property name="jdoPropertyMap">
+					<props>
+						<prop key="javax.jdo.PersistenceManagerFactoryClass">org.datanucleus.store.appengine.jdo.DatastoreJDOPersistenceManagerFactory</prop>
+						<prop key="javax.jdo.option.ConnectionURL">appengine</prop>
+						<prop key="javax.jdo.option.NontransactionalRead">true</prop>
+						<prop key="javax.jdo.option.NontransactionalWrite">false</prop>
+						<prop key="javax.jdo.option.RetainValues">false</prop>
+						<prop key="javax.jdo.option.DetachAllOnCommit">true</prop>
+						<prop key="javax.jdo.option.Multithreaded">true</prop>
+						<prop key="datanucleus.appengine.ignorableMetaDataBehavior">NONE</prop>
+					</props>
+				</property>
+			</bean>
+		</property>
+		<property name="allowCreate" value="false" />
+	</bean>-->
+		<!-- <bean id="persistenceManagerFactory" class="org.springframework.orm.jdo.TransactionAwarePersistenceManagerFactoryProxy">
+			<property name="targetPersistenceManagerFactory">
+				<bean class="org.springframework.orm.jdo.LocalPersistenceManagerFactoryBean">
+					<property name="jdoProperties">
+						<props>
+							<prop key="javax.jdo.PersistenceManagerFactoryClass">org.datanucleus.api.jdo.JDOPersistenceManagerFactory</prop>
+							<prop key="javax.jdo.option.ConnectionURL">jdbc:mysql://localhost:3306/marketplace</prop>
+							<prop key="javax.jdo.option.ConnectionUserName">root</prop>
+							<prop key="javax.jdo.option.ConnectionPassword">password</prop>
+							<prop key="datanucleus.autoCreateSchema">true</prop>
+							<prop key="javax.jdo.option.ConnectionDriverName">com.mysql.jdbc.Driver</prop>
+						</props>
+					</property>
+				</bean>	
+			</property>	
+			<property name="allowCreate" value="true" />
+		</bean> -->
+		<bean id="persistenceManagerFactory" class="org.springframework.orm.jdo.LocalPersistenceManagerFactoryBean">
 			<property name="jdoProperties">
 				<props>
 					<prop key="javax.jdo.PersistenceManagerFactoryClass">org.datanucleus.api.jdo.JDOPersistenceManagerFactory</prop>
@@ -32,7 +68,7 @@
 		<!-- Transaction Manager for PMF -->
 		<bean id="jdoTransactionManager" class="org.springframework.orm.jdo.JdoTransactionManager">
 			<property name="persistenceManagerFactory">
-				<ref bean="pmf"/>
+				<ref bean="persistenceManagerFactory"/>
 			</property>
 		</bean>
 			<!-- Shiro's main business-tier object for web-enabled applications
@@ -56,29 +92,29 @@
     </bean>
 	<bean id="sampleRealm" class="com.marketplace.shared.common.security.MarketplaceUserRealm"></bean>
 	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
-    <property name="securityManager" ref="securityManager"/>
-    
-	
-    <!-- override these for application-specific URLs if you like:
-    <property name="loginUrl" value="/login.jsp"/>
-    <property name="successUrl" value="/home.jsp"/>
-    <property name="unauthorizedUrl" value="/unauthorized.jsp"/> -->
-    <!-- The 'filters' property is not necessary since any declared javax.servlet.Filter bean  -->
-    <!-- defined will be automatically acquired and available via its beanName in chain        -->
-    <!-- definitions, but you can perform instance overrides or name aliases here if you like: -->
-    <!-- <property name="filters">
-        <util:map>
-            <entry key="anAlias" value-ref="someFilter"/>
-        </util:map>
-    </property> -->
-    <property name="filterChainDefinitions">
-        <value>
-          /login = authc
-            /login/**=authc
-            /logout = logout
-			/*=authc
-        </value>
-    </property>
-</bean>
+		<property name="securityManager" ref="securityManager"/>
+		
+		
+		<!-- override these for application-specific URLs if you like:
+		<property name="loginUrl" value="/login.jsp"/>
+		<property name="successUrl" value="/home.jsp"/>
+		<property name="unauthorizedUrl" value="/unauthorized.jsp"/> -->
+		<!-- The 'filters' property is not necessary since any declared javax.servlet.Filter bean  -->
+		<!-- defined will be automatically acquired and available via its beanName in chain        -->
+		<!-- definitions, but you can perform instance overrides or name aliases here if you like: -->
+		<!-- <property name="filters">
+			<util:map>
+				<entry key="anAlias" value-ref="someFilter"/>
+			</util:map>
+		</property> -->
+		<property name="filterChainDefinitions">
+			<value>
+				/login = authc
+				/login/**=authc
+				/logout = logout
+				/** = authc
+			</value>
+		</property>
+	</bean>
 	
 </beans>

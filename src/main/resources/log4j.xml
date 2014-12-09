@@ -12,8 +12,17 @@
 	</appender>
  
 	<root>
-		<level value="DEBUG" />
+		<level value="INFO" />
 		<appender-ref ref="Appender2" />
 	</root>
- 
+	
+	<logger name="com.marketplace.shared.common.framework.dao.*">
+		<level value="DEBUG" />
+		<appender-ref ref="Appender2" />
+	</logger>
+	<logger name="com.marketplace.web.resource.*">
+		<level value="DEBUG" />
+		<appender-ref ref="Appender2" />
+	</logger>
+	
 </log4j:configuration>

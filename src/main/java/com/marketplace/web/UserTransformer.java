@@ -12,8 +12,6 @@ import com.marketplace.org.User;
 /**
  * This is the transformer used for the BlogInfo entity
  * 
- * @author praveen.pandey
- * 
  */
 public class UserTransformer  {
     

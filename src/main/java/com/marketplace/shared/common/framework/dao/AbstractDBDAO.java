@@ -53,6 +53,7 @@ public abstract class AbstractDBDAO<T extends Entity> implements DBDAO<T>, Filte
     private static final Long NULL_ID = -1l;
     @Autowired
     protected PersistenceManagerFactory persistenceManagerFactory;
+    //@Autowired
     protected PersistenceManager persistenceManager;
   //  ersistenceManagerFactoryUtils.getPersistenceManager(pmf, true);
     /**
@@ -61,8 +62,10 @@ public abstract class AbstractDBDAO<T extends Entity> implements DBDAO<T>, Filte
      * @return the persistenceManager
      */
     public PersistenceManager getPersistenceManager() {
-        this.persistenceManager =  PersistenceManagerFactoryUtils.doGetPersistenceManager(persistenceManagerFactory, true);
-    	// this.persistenceManager =  persistenceManagerFactory.getPersistenceManager();
+        
+    	//Don't remove or comment this line otherwise transaciton will not work we have to get the persistence manager through spring
+    	this.persistenceManager =  PersistenceManagerFactoryUtils.doGetPersistenceManager(persistenceManagerFactory, false);
+    	//this.persistenceManager =  persistenceManagerFactory.getPersistenceManager();
     	logger.debug("Obtained PersistenceManager: {}", this.persistenceManager.toString());
         return this.persistenceManager;
     }
@@ -539,8 +542,10 @@ public abstract class AbstractDBDAO<T extends Entity> implements DBDAO<T>, Filte
      * @return The modified entity.
      */
     protected T implementUpdate(final T entity) {
-        this.getPersistenceManager().setCopyOnAttach(false);
-        return this.getPersistenceManager().makePersistent(entity);
+    	
+        PersistenceManager pm = this.getPersistenceManager();
+        pm.setCopyOnAttach(false);
+        return pm.makePersistent(entity);
     }
     
     /**
