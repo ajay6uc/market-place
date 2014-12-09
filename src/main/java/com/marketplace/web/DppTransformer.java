@@ -1,9 +1,16 @@
 package com.marketplace.web;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MultivaluedMap;
+
+import org.glassfish.jersey.media.multipart.FormDataBodyPart;
+import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 
 import com.marketplace.dataaccess.node.Dpp;
 import com.marketplace.org.User;
@@ -23,36 +30,23 @@ public class DppTransformer  {
     private static final String GRADE = "grade";
     private static final String LEVEL = "level";
     
-    public static Dpp formToEntity(Form form) {
+    public static Dpp formToEntity(FormDataMultiPart form) {
         
     	
     	Dpp dpp = new Dpp();
-    	MultivaluedMap<String, String>  dppMap= form.asMap();
-    	
-        if (dppMap.getFirst(DESCRIPTION) != null) {
-        	dpp.setDescription(dppMap.getFirst(DESCRIPTION));
+    	Map<String, List<FormDataBodyPart>>  dppMap= form.getFields();
+    	if(form.getField(NAME)!=null){
+    		dpp.setName(form.getField(NAME).getValueAs(String.class));
+    	}
+    	if(form.getField(CONCEPT)!=null){
+    		dpp.setConcept(form.getField(CONCEPT).getValueAs(String.class));
         }
-        
-        if (dppMap.getFirst(SUBJECT) != null) {
-        	dpp.setSubject(dppMap.getFirst(SUBJECT));
-        }
-        
-        if (dppMap.getFirst(NAME) != null) {
-        	dpp.setName(dppMap.getFirst(NAME));
-        }
-        
-        if (dppMap.getFirst(CONCEPT) != null) {
-        	dpp.setConcept(dppMap.getFirst(CONCEPT));
-        }
-        
-        if (dppMap.getFirst(GRADE) != null) {
-        	dpp.setGrade(dppMap.getFirst(GRADE));
-        }
-        
-        if (dppMap.getFirst(LEVEL) != null) {
-            dpp.setLevel(dppMap.getFirst(LEVEL));
-        }
-        
+    	if(form.getField(SUBJECT) !=null){
+    		dpp.setSubject(form.getField(SUBJECT).getValueAs(String.class));
+    	}
+    	if(form.getField(GRADE)!=null){
+    		dpp.setGrade(form.getField(GRADE).getValueAs(String.class));
+    	}
         return dpp;
     }
     

@@ -15,7 +15,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 
 import org.apache.shiro.web.util.WebUtils;
+import org.glassfish.jersey.media.multipart.ContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -23,6 +26,7 @@ import org.springframework.context.annotation.Scope;
 import com.marketplace.dataaccess.node.Dpp;
 import com.marketplace.org.User;
 import com.marketplace.service.UserService;
+import com.marketplace.service.amazon.AmazonS3Service;
 import com.marketplace.service.node.DppService;
 import com.marketplace.shared.common.framework.web.AbstractResource;
 import com.marketplace.web.DppTransformer;
@@ -38,29 +42,48 @@ public class DppResource extends AbstractResource<Dpp> {
     
 	
 	UserService userService;
-	
+	AmazonS3Service amazonS3Service;
 
 	
     
+//	@POST
+//	@Consumes(MediaType.MULTIPART_FORM_DATA)
+//	@Produces(MediaType.APPLICATION_JSON)
+//	@Path("/uploadDpp")
+//    public User uploadDp(@FormDataParam("name") String name,
+//    		@FormDataParam("subject") String subject,
+//    		@FormDataParam("concept") String concept,
+//    		@FormDataParam("file") InputStream file,
+//    		@FormDataParam("file") FormDataContentDisposition filedata) throws IOException  {
+//		
+//		//Dpp dpp = DppTransformer.formToEntity(userForm);
+//		System.out.println (subject);
+//		System.out.println (concept);
+//		System.out.println (filedata);
+//		return null;
+//		
+//	
+//	}
+	
 	@POST
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/uploadDpp")
-    public User uploadDp(@FormDataParam("name") String name,
-    		@FormDataParam("subject") String subject,
-    		@FormDataParam("concept") String concept,
-    		@FormDataParam("file") InputStream file,
-    		@FormDataParam("file") FormDataContentDisposition filedata) throws IOException  {
-		
-		//Dpp dpp = DppTransformer.formToEntity(userForm);
-		System.out.println (subject);
-		System.out.println (concept);
-		System.out.println (filedata);
-		return null;
-		
-	
+	public Dpp uploadDp(FormDataMultiPart form) throws IOException {
+
+		Dpp dpp = DppTransformer.formToEntity(form);
+		FormDataBodyPart filePart = form.getField("file");
+
+		ContentDisposition headerOfFilePart = filePart.getContentDisposition();
+		String filePath = "org-test-1/" + headerOfFilePart.getFileName();
+		InputStream fileInputStream = filePart.getValueAs(InputStream.class);
+		this.amazonS3Service.uploadPdfOrEpub("org-1", filePath, "application/pdf", fileInputStream);
+		dpp.setContentUrl("https://s3-ap-northeast-1.amazonaws.com/futor-static-develop/" + filePath);
+
+		return getService().insert(dpp);
+
 	}
-	
+
 	@PUT
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.APPLICATION_JSON)
@@ -88,9 +111,10 @@ public class DppResource extends AbstractResource<Dpp> {
      * @param userTransformer The User Transformer.
      */
     @Autowired
-    public DppResource(DppService dppService, UserService userService) {
+    public DppResource(DppService dppService, UserService userService, AmazonS3Service amazonS3Service) {
         super(dppService);
         this.userService=userService;
+        this.amazonS3Service = amazonS3Service;
         
     }
 

@@ -27,27 +27,27 @@ public class Dpp extends AbstractEntity implements StoreCallback {
 	private String name;
 
 	@Persistent
-	@Column(name = "Description")
+	@Column(name = "DESCRIPTION")
 	private String description;
-
+	
 	@Persistent
-	@Column(name = "Subject")
-	private String subject;
-
-	@Persistent
-	@Column(name = "Grade")
-	private String grade;
-
-	@Persistent
-	@Column(name = "Concept")
-	private String concept;
-
-	@Persistent
-	@Column(name = "ContentUrl")
+	@Column(name = "CONTENT_URL")
 	private String contentUrl;
 
 	@Persistent
-	@Column(name = "level")
+	@Column(name = "SUBJECT")
+	private String subject;
+
+	@Persistent
+	@Column(name = "GRADE")
+	private String grade;
+
+	@Persistent
+	@Column(name = "CONCEPT")
+	private String concept;
+	
+	@Persistent
+	@Column(name = "LEVEL")
 	private String level;
 
 	public Dpp() {
@@ -101,10 +101,19 @@ public class Dpp extends AbstractEntity implements StoreCallback {
 	public void setLevel(String level) {
 		this.level = level;
 	}
+	
+	
+	public String getContentUrl() {
+		return contentUrl;
+	}
+
+	public void setContentUrl(String contentUrl) {
+		this.contentUrl = contentUrl;
+	}
 
 	@Override
 	public void jdoPreStore() {
-		JDOInstanceCallbacksUtil.populateEntityFields(this);
+		//JDOInstanceCallbacksUtil.populateEntityFields(this);
 	}
 
 }
