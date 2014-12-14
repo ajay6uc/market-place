@@ -76,8 +76,9 @@ public class DppResource extends AbstractResource<Dpp> {
 
 		ContentDisposition headerOfFilePart = filePart.getContentDisposition();
 		String filePath = "org-test-1/" + headerOfFilePart.getFileName();
+		String fileType = filePath.substring(filePath.lastIndexOf(".") +1);
 		InputStream fileInputStream = filePart.getValueAs(InputStream.class);
-		this.amazonS3Service.uploadPdfOrEpub("org-1", filePath, "application/pdf", fileInputStream);
+		this.amazonS3Service.uploadPdfOrEpub("org-1", filePath, "image/"+ fileType, fileInputStream);
 		dpp.setContentUrl("https://s3-ap-northeast-1.amazonaws.com/futor-static-develop/" + filePath);
 
 		return getService().insert(dpp);
