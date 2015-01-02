@@ -9,20 +9,20 @@ import org.springframework.stereotype.Service;
 
 import com.marketplace.dataaccess.node.Question;
 import com.marketplace.dataaccess.node.QuestionDAO;
-import com.marketplace.dataaccess.node.QuestionDNDAO;
-import com.marketplace.dataaccess.node.DppSolution;
-import com.marketplace.dataaccess.node.DppSolutionDAO;
+import com.marketplace.dataaccess.node.Node;
+import com.marketplace.dataaccess.node.NodeDAO;
 import com.marketplace.service.UserService;
 import com.marketplace.shared.common.framework.entity.Entity;
 import com.marketplace.shared.common.framework.service.AbstractDBService;
 
 
 @Service
-public class DefaultDppSolutionService extends AbstractDBService<DppSolution> implements DppSolutionService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultDppSolutionService.class);
+public class DefaultNodeService extends AbstractDBService<Node> implements NodeService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultQuestionService.class);
     
     @Autowired
     UserService userService;
+    
     
     /**
      *
@@ -33,24 +33,30 @@ public class DefaultDppSolutionService extends AbstractDBService<DppSolution> im
      * @param userOrgProfileService The UserOrgProfileService Service instance.
      */
     @Autowired
-    public DefaultDppSolutionService(DppSolutionDAO dao) {
+    public DefaultNodeService(NodeDAO dao) {
     		super(dao);
        }
 
 	@Override
-	protected void validateBeforeInsert(DppSolution entity) {
+	protected void validateBeforeInsert(Node entity) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public List<Node> getChildren(Long parentId) {
+		return ((NodeDAO) getDao()).getChildren(parentId);
+		
+	}
+	
+	@Override
+	protected void validateBeforeUpdate(Node entity) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	protected void validateBeforeUpdate(DppSolution entity) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void validateBeforeDelete(DppSolution entity) {
+	protected void validateBeforeDelete(Node entity) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -73,5 +79,6 @@ public class DefaultDppSolutionService extends AbstractDBService<DppSolution> im
 		
 	}
 
+	
    
 }

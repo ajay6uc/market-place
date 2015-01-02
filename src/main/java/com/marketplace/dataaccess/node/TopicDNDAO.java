@@ -9,18 +9,18 @@ import com.marketplace.shared.common.framework.dao.AbstractDBDAO;
 import com.marketplace.shared.common.framework.searchengine.FilterExpression.FilterTerm;
 
 /**
-* Implementation of CRUD operations on Dpp domain object
+* Implementation of CRUD operations on Topic domain object
 * 
 */
 @Repository
-public class DppDNDAO extends AbstractDBDAO<Dpp> implements DppDAO {
+public class TopicDNDAO extends AbstractDBDAO<Topic> implements TopicDAO {
    
    /**
     * {@inheritDoc}
     */
    @Override
-   protected Class<Dpp> getEntity() {
-       return Dpp.class;
+   protected Class<Topic> getEntity() {
+       return Topic.class;
    }
    
    /**
@@ -31,7 +31,7 @@ public class DppDNDAO extends AbstractDBDAO<Dpp> implements DppDAO {
        List<Object> objectValues = new ArrayList<Object>();
        String key = filterTerm.getKey();
        String value = filterTerm.getValue();
-       if ("org.id".equalsIgnoreCase(key)) {
+       if ("orgId".equalsIgnoreCase(key)) {
            objectValues.add(Long.valueOf(value));
        }
        else {

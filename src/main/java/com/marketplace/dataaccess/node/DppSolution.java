@@ -46,7 +46,7 @@ public class DppSolution extends AbstractEntity implements StoreCallback {
     @ForeignKey(name = "DPPSOUTION_DPPID_FK",
                 deleteAction = ForeignKeyAction.NONE,
                 updateAction = ForeignKeyAction.NONE)
-	private Dpp dpp;	
+	private Question dpp;	
 	
 //	@Persistent
 //	@Column(name = "USER_ID")
@@ -86,11 +86,11 @@ public class DppSolution extends AbstractEntity implements StoreCallback {
 	}
 	
 	
-	public Dpp getDpp() {
+	public Question getDpp() {
 		return dpp;
 	}
 
-	public void setDpp(Dpp dpp) {
+	public void setDpp(Question dpp) {
 		this.dpp = dpp;
 	}
 

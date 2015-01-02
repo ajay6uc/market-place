@@ -7,16 +7,20 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.marketplace.dataaccess.node.Dpp;
-import com.marketplace.dataaccess.node.DppDAO;
+import com.marketplace.dataaccess.node.Concept;
+import com.marketplace.dataaccess.node.ConceptDAO;
+import com.marketplace.dataaccess.node.Course;
+import com.marketplace.dataaccess.node.CourseDAO;
+import com.marketplace.dataaccess.node.Question;
+import com.marketplace.dataaccess.node.QuestionDAO;
 import com.marketplace.service.UserService;
 import com.marketplace.shared.common.framework.entity.Entity;
 import com.marketplace.shared.common.framework.service.AbstractDBService;
 
 
 @Service
-public class DefaultDppService extends AbstractDBService<Dpp> implements DppService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultDppService.class);
+public class DefaultConceptService extends AbstractDBService<Concept> implements ConceptService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultConceptService.class);
     
     @Autowired
     UserService userService;
@@ -30,24 +34,24 @@ public class DefaultDppService extends AbstractDBService<Dpp> implements DppServ
      * @param userOrgProfileService The UserOrgProfileService Service instance.
      */
     @Autowired
-    public DefaultDppService(DppDAO dao) {
+    public DefaultConceptService(ConceptDAO dao) {
     		super(dao);
        }
 
 	@Override
-	protected void validateBeforeInsert(Dpp entity) {
+	protected void validateBeforeInsert(Concept entity) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	protected void validateBeforeUpdate(Dpp entity) {
+	protected void validateBeforeUpdate(Concept entity) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	protected void validateBeforeDelete(Dpp entity) {
+	protected void validateBeforeDelete(Concept entity) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -69,6 +73,9 @@ public class DefaultDppService extends AbstractDBService<Dpp> implements DppServ
 		// TODO Auto-generated method stub
 		
 	}
+
+	
+
 
    
 }

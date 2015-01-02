@@ -12,7 +12,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 
-import com.marketplace.dataaccess.node.Dpp;
+import com.marketplace.dataaccess.node.Question;
 import com.marketplace.dataaccess.node.DppSolution;
 import com.marketplace.org.User;
 

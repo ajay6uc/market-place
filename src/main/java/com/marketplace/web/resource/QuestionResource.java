@@ -3,7 +3,9 @@ package com.marketplace.web.resource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -23,27 +25,34 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 
-import com.marketplace.dataaccess.node.Dpp;
+import com.marketplace.dataaccess.node.Concept;
+import com.marketplace.dataaccess.node.Course;
+import com.marketplace.dataaccess.node.Node;
+import com.marketplace.dataaccess.node.Question;
+import com.marketplace.dataaccess.node.QuestionOption;
+import com.marketplace.dataaccess.node.Topic;
 import com.marketplace.org.User;
 import com.marketplace.service.UserService;
 import com.marketplace.service.amazon.AmazonS3Service;
-import com.marketplace.service.node.DppService;
+import com.marketplace.service.node.QuestionService;
+import com.marketplace.service.node.NodeService;
 import com.marketplace.shared.common.framework.web.AbstractResource;
-import com.marketplace.web.DppTransformer;
+import com.marketplace.web.NodeTransformer;
 import com.marketplace.web.UserTransformer;
 
 
 /**
  * Defines operations for User.
  */
-@Path("/dpp")
+@Path("/question")
 @Scope("request")
-public class DppResource extends AbstractResource<Dpp> {
+public class QuestionResource extends AbstractResource<Question> {
     
 	
 	UserService userService;
+	NodeService nodeService;
 	AmazonS3Service amazonS3Service;
-
+	private static final String PARENT_ID = "parentId";
 	
     
 //	@POST
@@ -69,18 +78,22 @@ public class DppResource extends AbstractResource<Dpp> {
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/uploadDpp")
-	public Dpp uploadDp(FormDataMultiPart form) throws IOException {
-
-		Dpp dpp = DppTransformer.formToEntity(form);
+	public Question uploadDp(FormDataMultiPart form) throws IOException {
+		Long parentId = null;
+		Course course = null;
+		Question dpp = NodeTransformer.formToEntity(form);
 		FormDataBodyPart filePart = form.getField("file");
-
-		ContentDisposition headerOfFilePart = filePart.getContentDisposition();
+		if(form.getField(PARENT_ID)!=null){
+			parentId = form.getField(PARENT_ID).getValueAs(Long.class);
+        }
+		course = (Course)nodeService.findById(parentId);
+    	ContentDisposition headerOfFilePart = filePart.getContentDisposition();
 		String filePath = "org-test-1/" + headerOfFilePart.getFileName();
 		String fileType = filePath.substring(filePath.lastIndexOf(".") +1);
 		InputStream fileInputStream = filePart.getValueAs(InputStream.class);
 		this.amazonS3Service.uploadPdfOrEpub("org-1", filePath, "image/"+ fileType, fileInputStream);
 		dpp.setContentUrl("https://s3-ap-northeast-1.amazonaws.com/futor-static-develop/" + filePath);
-
+		dpp.setParent(course);
 		return getService().insert(dpp);
 
 	}
@@ -112,11 +125,24 @@ public class DppResource extends AbstractResource<Dpp> {
      * @param userTransformer The User Transformer.
      */
     @Autowired
-    public DppResource(DppService dppService, UserService userService, AmazonS3Service amazonS3Service) {
+    public QuestionResource(QuestionService dppService, UserService userService, AmazonS3Service amazonS3Service, NodeService nodeService) {
         super(dppService);
         this.userService=userService;
         this.amazonS3Service = amazonS3Service;
+        this.nodeService = nodeService;
         
     }
+    
+    public Question implementCreate(Question question)  {
+		Node node = null;
+		Long parentId = question.getParentId();
+		node = nodeService.findById(parentId);
+		QuestionOption  questionOption= new QuestionOption();
+		Set<QuestionOption> questionOptions = new HashSet<QuestionOption>();
+		questionOptions.add(questionOption);
+		question.setQuestionOptions(questionOptions);
+		question.setParent(node);
+    	return getService().insert(question);
 
+	}
 }    

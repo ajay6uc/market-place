@@ -9,17 +9,14 @@ import org.springframework.stereotype.Service;
 
 import com.marketplace.dataaccess.node.Question;
 import com.marketplace.dataaccess.node.QuestionDAO;
-import com.marketplace.dataaccess.node.QuestionDNDAO;
-import com.marketplace.dataaccess.node.DppSolution;
-import com.marketplace.dataaccess.node.DppSolutionDAO;
 import com.marketplace.service.UserService;
 import com.marketplace.shared.common.framework.entity.Entity;
 import com.marketplace.shared.common.framework.service.AbstractDBService;
 
 
 @Service
-public class DefaultDppSolutionService extends AbstractDBService<DppSolution> implements DppSolutionService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultDppSolutionService.class);
+public class DefaultQuestionService extends AbstractDBService<Question> implements QuestionService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultQuestionService.class);
     
     @Autowired
     UserService userService;
@@ -33,24 +30,24 @@ public class DefaultDppSolutionService extends AbstractDBService<DppSolution> im
      * @param userOrgProfileService The UserOrgProfileService Service instance.
      */
     @Autowired
-    public DefaultDppSolutionService(DppSolutionDAO dao) {
+    public DefaultQuestionService(QuestionDAO dao) {
     		super(dao);
        }
 
 	@Override
-	protected void validateBeforeInsert(DppSolution entity) {
+	protected void validateBeforeInsert(Question entity) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	protected void validateBeforeUpdate(DppSolution entity) {
+	protected void validateBeforeUpdate(Question entity) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	protected void validateBeforeDelete(DppSolution entity) {
+	protected void validateBeforeDelete(Question entity) {
 		// TODO Auto-generated method stub
 		
 	}

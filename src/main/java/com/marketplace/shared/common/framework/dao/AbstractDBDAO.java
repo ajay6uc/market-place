@@ -65,6 +65,7 @@ public abstract class AbstractDBDAO<T extends Entity> implements DBDAO<T>, Filte
         
     	//Don't remove or comment this line otherwise transaciton will not work we have to get the persistence manager through spring
     	this.persistenceManager =  PersistenceManagerFactoryUtils.doGetPersistenceManager(persistenceManagerFactory, false);
+    	//this.persistenceManager.getFetchPlan().setMaxFetchDepth(1);
     	//this.persistenceManager =  persistenceManagerFactory.getPersistenceManager();
     	logger.debug("Obtained PersistenceManager: {}", this.persistenceManager.toString());
         return this.persistenceManager;
@@ -463,9 +464,14 @@ public abstract class AbstractDBDAO<T extends Entity> implements DBDAO<T>, Filte
                     
                 }
                 else {
-                    objectValues.add(splitValue);
+                	if ("parent.id".equalsIgnoreCase(key)) {
+                        objectValues.add(Long.valueOf(value));
+                    }else{
+                    	objectValues.add(splitValue);
+                    }
                 }
             }
+            
         }
         return objectValues;
     }

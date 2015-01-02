@@ -21,12 +21,12 @@ import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 
-import com.marketplace.dataaccess.node.Dpp;
+import com.marketplace.dataaccess.node.Question;
 import com.marketplace.dataaccess.node.DppSolution;
 import com.marketplace.org.User;
 import com.marketplace.service.UserService;
 import com.marketplace.service.amazon.AmazonS3Service;
-import com.marketplace.service.node.DppService;
+import com.marketplace.service.node.QuestionService;
 import com.marketplace.service.node.DppSolutionService;
 import com.marketplace.shared.common.framework.web.AbstractResource;
 import com.marketplace.web.DppSolutionTransformer;
@@ -39,7 +39,7 @@ import com.marketplace.web.UserTransformer;
 @Scope("request")
 public class DppSolutionResource extends AbstractResource<DppSolution> {
 
-	DppService dppService;
+	QuestionService dppService;
 	AmazonS3Service amazonS3Service;
 	private static final String DPPID = "dppId";
 	
@@ -54,7 +54,7 @@ public class DppSolutionResource extends AbstractResource<DppSolution> {
 		long dppId = 0;
 		if (form.getField(DPPID) != null) {
 			dppId = form.getField(DPPID).getValueAs(Long.class);
-			Dpp dpp = dppService.findById(dppId);
+			Question dpp = dppService.findById(dppId);
 			dppSolution.setDpp(dpp);
 		}else{
 			return null;
@@ -80,7 +80,7 @@ public class DppSolutionResource extends AbstractResource<DppSolution> {
 	 */
 	@Autowired
 	public DppSolutionResource(DppSolutionService dppSolutionService,
-			DppService dppService, AmazonS3Service amazonS3Service) {
+			QuestionService dppService, AmazonS3Service amazonS3Service) {
 		super(dppSolutionService);
 		this.dppService = dppService;
 		this.amazonS3Service = amazonS3Service;
