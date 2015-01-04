@@ -15,6 +15,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.commons.lang3.StringUtils;
 
 import com.marketplace.question.QuestionType;
+import com.marketplace.question.Status;
 import com.marketplace.shared.common.JDOInstanceCallbacksUtil;
 import com.marketplace.shared.common.framework.entity.AbstractEntity;
 
@@ -77,7 +78,10 @@ public class Question extends Node  {
 
 
 	public String getAnswer() {
-		return answer;
+		if(this.answer != null){
+			return this.answer.trim();
+		}
+		return this.answer;
 	}
 
 

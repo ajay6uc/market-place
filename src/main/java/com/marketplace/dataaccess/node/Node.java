@@ -25,6 +25,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.marketplace.org.Org;
 import com.marketplace.question.ComplexityLevel;
+import com.marketplace.question.Status;
 import com.marketplace.shared.common.JDOInstanceCallbacksUtil;
 import com.marketplace.shared.common.framework.entity.AbstractEntity;
 
@@ -35,7 +36,6 @@ import com.marketplace.shared.common.framework.entity.AbstractEntity;
 @Discriminator(strategy = DiscriminatorStrategy.CLASS_NAME, column = "NODE_TYPE")
 @Inheritance(strategy = InheritanceStrategy.NEW_TABLE)
 @XmlRootElement
-//@XmlAccessorType(XmlAccessType.FIELD)
 public abstract class Node extends AbstractEntity implements StoreCallback {
 	private static final long serialVersionUID = 1L;
 
@@ -60,8 +60,13 @@ public abstract class Node extends AbstractEntity implements StoreCallback {
 	@Column(name = "GRADE")
 	private String grade;
 	
+	@Persistent
 	@Column(name = "Status")
-	private Long status;
+	@Extensions({
+	    @Extension(vendorName="datanucleus", key="enum-getter-by-value", value="getEnumByValue"),
+	    @Extension(vendorName="datanucleus", key="enum-value-getter", value="getValue")
+	   })
+	private Status status;
 	
 	@Persistent
 	@Column(name = "EXAM")
@@ -70,7 +75,7 @@ public abstract class Node extends AbstractEntity implements StoreCallback {
 	
 	@Persistent
 	@Column(name = "PARENT_ID")
-	@ForeignKey(name = "NODE_PARENTID_FK", deleteAction = ForeignKeyAction.NONE, updateAction = ForeignKeyAction.NONE)
+	@ForeignKey(name = "NODE_PARENTID_FK", deleteAction = ForeignKeyAction.CASCADE, updateAction = ForeignKeyAction.CASCADE)
 	@XmlTransient
 	private Node parent;
 	
@@ -124,7 +129,6 @@ public abstract class Node extends AbstractEntity implements StoreCallback {
 		this.name = name;
 	}
 	
-	@XmlTransient
 	public String getDescription() {
 		return description;
 	}
@@ -259,18 +263,16 @@ public abstract class Node extends AbstractEntity implements StoreCallback {
 
 
 
-	public Long getStatus() {
+	public Status getStatus() {
 		return status;
 	}
 
 
 
-	public void setStatus(Long status) {
+	public void setStatus(Status status) {
 		this.status = status;
 	}
-	
-	
-	
+
 	
 
 }

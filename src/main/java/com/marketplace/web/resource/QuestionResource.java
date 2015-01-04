@@ -3,8 +3,10 @@ package com.marketplace.web.resource;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -48,11 +50,13 @@ import com.marketplace.question.ComplexityLevel;
 import com.marketplace.question.QuestionFileErrorsInfo;
 import com.marketplace.question.QuestionFileLoadInfo;
 import com.marketplace.question.QuestionType;
+import com.marketplace.question.Status;
 import com.marketplace.service.UserService;
 import com.marketplace.service.amazon.AmazonS3Service;
 import com.marketplace.service.node.ConceptService;
 import com.marketplace.service.node.QuestionService;
 import com.marketplace.service.node.NodeService;
+import com.marketplace.shared.common.core.NullAwareBeanUtilsBean;
 import com.marketplace.shared.common.framework.dao.AbstractDBDAO;
 import com.marketplace.shared.common.framework.web.AbstractResource;
 import com.marketplace.util.ConstantUtils;
@@ -133,7 +137,7 @@ public class QuestionResource extends AbstractResource<Question> {
 
 			XWPFTableRow tableRow = rowList.get(rowCount);
 			try {
-				processTableCell(rowCount, tableRow, fileName, conceptId, headerMap);
+				processTableCell(rowCount, tableRow, fileName, concept, headerMap);
 
 			} catch (Exception ex) {
 				logger.error("Error ocurred while Processing QuestionTable of the uploaded file table for nodeId : "
@@ -153,15 +157,15 @@ public class QuestionResource extends AbstractResource<Question> {
 		
 	}
 	
-	private void processTableCell(int rowCount, XWPFTableRow tableRow, String fileName, Long conceptId, HashMap<Integer, String> headerMap) throws Exception{
+	private void processTableCell(int rowCount, XWPFTableRow tableRow, String fileName, Concept concept, HashMap<Integer, String> headerMap) throws Exception{
 		
 			
 		List<XWPFTableCell> tableRowCellList = tableRow.getTableCells();
 		
 		logger.info("tableRowCellList size : " + tableRowCellList.size());
 		Question question = new Question();
-		question.setStatus(1L);
-		question.setParentId(conceptId);
+		question.setStatus(Status.Active);
+		question.setParent(concept);
 		question.setQuestionType(QuestionType.SINGLE_CHOICE);
 		if(rowCount!=0){
 			question = getService().insert(question);
@@ -257,8 +261,8 @@ public class QuestionResource extends AbstractResource<Question> {
 			
 			}
 		if(rowCount!=0){
-			logger.info("Size of Question Options Before setting  question option 1: " + question.getQuestionOptions().size());
-			logger.info("Size of Question Options After setting  question option : " + questionOptions.size());
+			logger.info("Size of QuestionOptions of Question Before setting  question option : " + question.getQuestionOptions().size());
+			logger.info("Size of QuestionOptions Before setting question option : " + questionOptions.size());
 			getService().update(question);
 			logger.info("Size of Question Options After update: " + question.getQuestionOptions().size());
 		}	
@@ -357,15 +361,17 @@ public class QuestionResource extends AbstractResource<Question> {
 				question.setImagePath(cellText);
 				break;
 			}
-			Set<QuestionOption> questionOptions1 = question.getQuestionOptions();
-			if(questionOptions1 == null){
-				questionOptions1 = new HashSet<QuestionOption>();
-				questionOptions1.add(questionOption);
-			}else{
-				questionOptions1.add(questionOption);
-			}
-			questionOption.setQuestion(question);
 			
+			if(questionOption != null){
+				Set<QuestionOption> questionOptionsFromDB = question.getQuestionOptions();
+				if(questionOptionsFromDB == null){
+					questionOptionsFromDB = new LinkedHashSet<QuestionOption>();
+					questionOptionsFromDB.add(questionOption);
+				}else{
+					questionOptionsFromDB.add(questionOption);
+				}
+				questionOption.setQuestion(question);
+			}
 				
 			
 		} catch (Exception ex) {
@@ -464,16 +470,49 @@ public class QuestionResource extends AbstractResource<Question> {
         
     }
     
-//    public Question implementCreate(Question question)  {
-//		Concept node = null;
-//		Long parentId = question.getParentId();
-//		node = conceptService.findById(parentId);
-//		QuestionOption  questionOption= new QuestionOption();
-//		Set<QuestionOption> questionOptions = new HashSet<QuestionOption>();
-//		questionOptions.add(questionOption);
-//		question.setQuestionOptions(questionOptions);
-//		question.setParent(node);
-//    	return getService().insert(question);
-//
-//	}
+    @Override
+    public Question implementCreate(Question question)  {
+		Concept node = null;
+		Long parentId = question.getParentId();
+		node = conceptService.findById(parentId);
+		QuestionOption  questionOption= new QuestionOption();
+		Set<QuestionOption> questionOptions = new HashSet<QuestionOption>();
+		questionOptions.add(questionOption);
+		question.setQuestionOptions(questionOptions);
+		question.setParent(node);
+    	return super.implementCreate(question);
+
+	}
+    
+    @Override
+    protected Question implementModify(Long id, Question question)   {
+    	logger.debug("Updating the question resource");
+
+    	Question questionFromDb = find(question.getId());
+
+    	NullAwareBeanUtilsBean nabu = new NullAwareBeanUtilsBean();
+    	try {
+    		nabu.copyProperties(questionFromDb, question);
+    		for(QuestionOption questionOptionsFromDb : questionFromDb.getQuestionOptions()){
+    			for(QuestionOption questionOptionFromUI : question.getQuestionOptions()){
+    				if(questionOptionsFromDb.getId() == questionOptionFromUI.getId()){
+    					nabu.copyProperties(questionOptionsFromDb, questionOptionFromUI);
+    				}
+    			}
+    		}
+    	} catch (IllegalAccessException | InvocationTargetException ex) {
+    		logger.debug("Error ocurred while copying question entity properties to db entity properties for update from UI", ex);
+    	}
+
+    	if (question != null) {
+
+    		questionFromDb = this.getService().update(questionFromDb);
+    		logger.info("Returning  updated question entity" + questionFromDb);
+    		return questionFromDb;
+    	}
+
+    	return questionFromDb;
+    }
+    
+    
 }    

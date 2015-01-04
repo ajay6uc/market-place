@@ -1,12 +1,15 @@
 package com.marketplace.dataaccess.node;
 
 import javax.jdo.annotations.Column;
+import javax.jdo.annotations.ForeignKey;
+import javax.jdo.annotations.ForeignKeyAction;
 import javax.jdo.annotations.Inheritance;
 import javax.jdo.annotations.InheritanceStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.listener.StoreCallback;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -31,12 +34,11 @@ public class QuestionOption extends AbstractEntity implements StoreCallback {
 	@Column(name = "DESCRIPTION")
 	private String description;
     
-    @Persistent
-    @Column(name = "IS_CORRECT")
-    private boolean correct;
-    
+  
     @Persistent
     @Column(name = "QUESTION_ID")
+    @ForeignKey(name = "QUESTION_QUESTION_OPTION_FK", deleteAction = ForeignKeyAction.CASCADE, updateAction = ForeignKeyAction.CASCADE)
+    @XmlTransient
     private Question question;
     
     
@@ -56,20 +58,7 @@ public class QuestionOption extends AbstractEntity implements StoreCallback {
 		this.description = description;
 	}
 
-
-
-	public boolean isCorrect() {
-		return correct;
-	}
-
-
-
-	public void setCorrect(boolean correct) {
-		this.correct = correct;
-	}
-
-
-
+	@XmlTransient
 	public Question getQuestion() {
 		return question;
 	}
@@ -96,7 +85,7 @@ public class QuestionOption extends AbstractEntity implements StoreCallback {
 
 	@Override
     public void jdoPreStore() {
-        JDOInstanceCallbacksUtil.populateEntityFields(this);
+        //JDOInstanceCallbacksUtil.populateEntityFields(this);
     }
     
 }

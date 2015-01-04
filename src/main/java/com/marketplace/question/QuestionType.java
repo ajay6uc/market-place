@@ -20,9 +20,11 @@ public enum QuestionType {
 	    {
 	        switch (value)
 	        {
-	            case 1:
+	        	case 1:
+	        		return SINGLE_CHOICE;
+	        	case 2:
 	                return FILL_IN_THE_BLANKS;
-	            case 2:
+	            case 3:
 	                return MULTIPLE_CHOICE;
 	            default:
 	                return SINGLE_CHOICE;

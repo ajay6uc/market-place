@@ -2,7 +2,7 @@ package com.marketplace.util;
 
 public class ConstantUtils {
 	
-	public static String QUESTIONS = "QUESTIONS";
+	public static String QUESTIONS = "questions";
 	public static String FILE_UPLOAD = "BROWSER_FILE_UPLOAD_PROCESSS";
 	public static String CONCEPT_ID = "conceptId";
 	

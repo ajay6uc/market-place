@@ -330,7 +330,7 @@ public abstract class AbstractResource<T extends Entity> extends BaseResource im
     protected T implementModify(Long id, T entity)   {
         LOGGER.debug("Check if this is an update request");
         
-        T entityFound = find(id, entity);
+        T entityFound = find(id);
         NullAwareBeanUtilsBean nabu = new NullAwareBeanUtilsBean();
         try {
 			nabu.copyProperties(entityFound, entity);
@@ -361,21 +361,12 @@ public abstract class AbstractResource<T extends Entity> extends BaseResource im
      * @param form capturing user input.
      * @return an Entity if found else null.
      */
-    protected T find(Long id, T entity) {
+    protected T find(Long id ) {
         T entityFound = null;
         
         if (id != null) {
         	return entityFound = this.getService().findById(id);
         }
-        
-//        if (entity == null) {
-//            Object entityId = this.getTransformer().formToEntityId(form);
-//            
-//            if (entityId instanceof SearchCriteria) {
-//                entity = this.getService().findOne((SearchCriteria) entityId);
-//            }
-//        }
-        
         return entityFound;
     }
     
