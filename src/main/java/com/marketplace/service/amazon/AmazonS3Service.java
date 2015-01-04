@@ -103,6 +103,60 @@ public class AmazonS3Service {
 			throw e;
 		}
 	}
+	
+	
+
+	/**
+	 * @param org
+	 * @param imagePath
+	 * @param imageData
+	 * @throws IOException
+	 */
+	public void uploadImage(String imagePath, byte [] imageData) throws IOException {
+
+
+		try {
+			
+			initializeS3();
+			/*
+			 * Upload an object to your bucket - You can easily upload a file to
+			 * S3, or upload directly an InputStream if you know the length of
+			 * the data in the stream. You can also specify your own metadata
+			 * when uploading to S3, which allows you set a variety of options
+			 * like content-type and content-encoding, plus additional metadata
+			 * specific to your applications.
+			 */
+			logger.info("Uploading image object to S3 under key which will be same as imagePath :" + imagePath);
+			ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(imageData);
+			ObjectMetadata metadata = new ObjectMetadata();
+			String contentType = "image/" + imagePath.substring(imagePath.lastIndexOf('.') + 1);
+			logger.info("Uploading image having contentType  : " + contentType + " and having size : " + imageData.length);
+			metadata.setContentType(contentType);
+			metadata.setContentLength(imageData.length);
+			amazonS3.putObject(new PutObjectRequest(s3Bucket, imagePath, byteArrayInputStream, metadata).withCannedAcl(CannedAccessControlList.PublicRead));;
+
+		} catch (AmazonServiceException ase) {
+			String errorMessage = "Caught an AmazonServiceException, which means your request made it "
+					+ "to Amazon S3, but was rejected with an error response for some reason." 
+					+ "Error Message:    " + ase.getMessage() 
+					+ "HTTP Status Code: " + ase.getStatusCode()
+					+ "AWS Error Code:   " + ase.getErrorCode()
+					+ "Error Type:       " + ase.getErrorType()
+					+ "Request ID:       " + ase.getRequestId();
+			logger.error(errorMessage, ase);
+			throw ase;
+		} catch (AmazonClientException ace) {
+			String errorMessage = "Caught an AmazonClientException, which means the client encountered "
+					+ "a serious internal problem while trying to communicate with S3 "
+					+ "such as not being able to access the network";
+			logger.error(errorMessage, ace);
+			throw ace;
+		} catch (Exception e) {
+			logger.error("Error Ocurred while uploading image to amazon s3", e);
+			throw e;
+		}
+	}
+	
 
 	/**
 	 * Initializes s3 resources 

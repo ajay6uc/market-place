@@ -3,6 +3,8 @@ package com.marketplace.dataaccess.node;
 import java.util.Set;
 
 import javax.jdo.annotations.Column;
+import javax.jdo.annotations.Extension;
+import javax.jdo.annotations.Extensions;
 import javax.jdo.annotations.Inheritance;
 import javax.jdo.annotations.InheritanceStrategy;
 import javax.jdo.annotations.PersistenceCapable;
@@ -12,6 +14,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.marketplace.question.QuestionType;
 import com.marketplace.shared.common.JDOInstanceCallbacksUtil;
 import com.marketplace.shared.common.framework.entity.AbstractEntity;
 
@@ -23,23 +26,25 @@ import com.marketplace.shared.common.framework.entity.AbstractEntity;
 @XmlRootElement
 public class Question extends Node  {
 	private static final long serialVersionUID = 1L;
-
-//	@Persistent
-//	@Column(name = "NAME")
-//	private String name;
-
 	
+
 	public Question() {
 		super();
 	}
+	
 
-//	public String getName() {
-//		return name;
-//	}
-//
-//	public void setName(String name) {
-//		this.name = name;
-//	}
+	@Persistent
+	@Column(name = "QUESION_TYPE")
+	@Extensions({
+	    @Extension(vendorName="datanucleus", key="enum-getter-by-value", value="getEnumByValue"),
+	    @Extension(vendorName="datanucleus", key="enum-value-getter", value="getValue")
+	   })
+	private QuestionType questionType;
+
+	@Persistent
+    @Column(name = "ANSWER")
+    private String answer;
+	    
 	
 	@Persistent(mappedBy = "question", dependentElement = "true")
 	private Set<QuestionOption> questionOptions;
@@ -59,6 +64,28 @@ public class Question extends Node  {
 	public void setQuestionOptions(Set<QuestionOption> questionOptions) {
 		this.questionOptions = questionOptions;
 	}
+
+
+	public QuestionType getQuestionType() {
+		return questionType;
+	}
+
+
+	public void setQuestionType(QuestionType questionType) {
+		this.questionType = questionType;
+	}
+
+
+	public String getAnswer() {
+		return answer;
+	}
+
+
+	public void setAnswer(String answer) {
+		this.answer = answer;
+	}
+
+	
 	
 	
 

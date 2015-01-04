@@ -153,8 +153,11 @@ public abstract class AbstractEntity implements Entity {
         if (entity.getClass() != getClass()) {
             return false;
         }
-        
         AbstractEntity other = (AbstractEntity) entity;
+        if(id == null  && other.id == null ){
+        	return false;
+        }
+            
         return Objects.equal(id, other.id);
     }
     

@@ -5,6 +5,8 @@ import java.util.Set;
 
 import javax.jdo.annotations.Column;
 import javax.jdo.annotations.Discriminator;
+import javax.jdo.annotations.Extension;
+import javax.jdo.annotations.Extensions;
 import javax.jdo.annotations.ForeignKey;
 import javax.jdo.annotations.ForeignKeyAction;
 import javax.jdo.annotations.Inheritance;
@@ -22,6 +24,7 @@ import javax.jdo.annotations.DiscriminatorStrategy;
 import org.apache.commons.lang3.StringUtils;
 
 import com.marketplace.org.Org;
+import com.marketplace.question.ComplexityLevel;
 import com.marketplace.shared.common.JDOInstanceCallbacksUtil;
 import com.marketplace.shared.common.framework.entity.AbstractEntity;
 
@@ -57,6 +60,9 @@ public abstract class Node extends AbstractEntity implements StoreCallback {
 	@Column(name = "GRADE")
 	private String grade;
 	
+	@Column(name = "Status")
+	private Long status;
+	
 	@Persistent
 	@Column(name = "EXAM")
 	private String exam;
@@ -90,9 +96,19 @@ public abstract class Node extends AbstractEntity implements StoreCallback {
 	@Column(name = "CODE")
 	private String code;
 	
+
+	@Persistent
+	@Column(name = "IMAGE_PATH")
+	private String imagePath;
+	
+	
 	@Persistent
 	@Column(name = "COMPLEXITY_LEVEL")
-	private String complexityLevl;
+	@Extensions({
+	    @Extension(vendorName="datanucleus", key="enum-getter-by-value", value="getEnumByValue"),
+	    @Extension(vendorName="datanucleus", key="enum-value-getter", value="getValue")
+	   })
+	private ComplexityLevel complexityLevel;
 	
 	public Node() {
 		super();
@@ -201,20 +217,6 @@ public abstract class Node extends AbstractEntity implements StoreCallback {
 		this.code = code;
 	}
 
-
-
-	public String getComplexityLevl() {
-		return complexityLevl;
-	}
-
-
-
-	public void setComplexityLevl(String complexityLevl) {
-		this.complexityLevl = complexityLevl;
-	}
-
-
-
 	public void setParentId(Long parentId) {
 		this.parentId = parentId;
 	}
@@ -230,6 +232,43 @@ public abstract class Node extends AbstractEntity implements StoreCallback {
 	public void setChildren(Set<Node> children) {
 		this.children = children;
 	}
+
+
+
+	public ComplexityLevel getComplexityLevel() {
+		return complexityLevel;
+	}
+
+
+
+	public void setComplexityLevel(ComplexityLevel complexityLevel) {
+		this.complexityLevel = complexityLevel;
+	}
+
+
+
+	public String getImagePath() {
+		return imagePath;
+	}
+
+
+
+	public void setImagePath(String imagePath) {
+		this.imagePath = imagePath;
+	}
+
+
+
+	public Long getStatus() {
+		return status;
+	}
+
+
+
+	public void setStatus(Long status) {
+		this.status = status;
+	}
+	
 	
 	
 	
