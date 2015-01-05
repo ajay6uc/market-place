@@ -19,9 +19,11 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.jdo.annotations.DiscriminatorStrategy;
 
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.persistence.oxm.annotations.XmlInverseReference;
 
 import com.marketplace.org.Org;
 import com.marketplace.question.ComplexityLevel;
@@ -44,7 +46,6 @@ public abstract class Node extends AbstractEntity implements StoreCallback {
 	private String name;
 
 	@Persistent
-	@XmlTransient
 	@Column(name = "DESCRIPTION")
 	private String description;
 	
@@ -55,8 +56,8 @@ public abstract class Node extends AbstractEntity implements StoreCallback {
 	@Persistent
 	@Column(name = "SUBJECT")
 	private String subject;
-	@Persistent
 	
+	@Persistent
 	@Column(name = "GRADE")
 	private String grade;
 	
@@ -76,7 +77,7 @@ public abstract class Node extends AbstractEntity implements StoreCallback {
 	@Persistent
 	@Column(name = "PARENT_ID")
 	@ForeignKey(name = "NODE_PARENTID_FK", deleteAction = ForeignKeyAction.CASCADE, updateAction = ForeignKeyAction.CASCADE)
-	@XmlTransient
+	@XmlInverseReference(mappedBy = "children")
 	private Node parent;
 	
   	@Persistent
@@ -87,10 +88,10 @@ public abstract class Node extends AbstractEntity implements StoreCallback {
     @Column(name = "IS_VISIBLE")
     private boolean visible;
 	
-    @NotPersistent
-    private Set<Node> children;
-//	
-	@Persistent
+    @Persistent(mappedBy = "parent")
+	private Set<Node> children;
+
+    @Persistent
 	@Column(name = "ORG_ID")
 	private Long orgId;
 	
@@ -175,7 +176,6 @@ public abstract class Node extends AbstractEntity implements StoreCallback {
 		JDOInstanceCallbacksUtil.populateEntityFields(this);
 	}
 	
-	@XmlTransient
 	public Node getParent() {
 		return parent;
 	}
