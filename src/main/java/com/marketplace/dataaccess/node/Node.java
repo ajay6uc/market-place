@@ -9,6 +9,7 @@ import javax.jdo.annotations.Extension;
 import javax.jdo.annotations.Extensions;
 import javax.jdo.annotations.ForeignKey;
 import javax.jdo.annotations.ForeignKeyAction;
+import javax.jdo.annotations.Index;
 import javax.jdo.annotations.Inheritance;
 import javax.jdo.annotations.InheritanceStrategy;
 import javax.jdo.annotations.NotPersistent;
@@ -73,11 +74,10 @@ public abstract class Node extends AbstractEntity implements StoreCallback {
 	@Column(name = "EXAM")
 	private String exam;
 
-	
 	@Persistent
 	@Column(name = "PARENT_ID")
+	@Index(name = "NODE_PARENTID_IDX")
 	@ForeignKey(name = "NODE_PARENTID_FK", deleteAction = ForeignKeyAction.CASCADE, updateAction = ForeignKeyAction.CASCADE)
-	@XmlInverseReference(mappedBy = "children")
 	private Node parent;
 	
   	@Persistent
@@ -87,8 +87,10 @@ public abstract class Node extends AbstractEntity implements StoreCallback {
     @Persistent
     @Column(name = "IS_VISIBLE")
     private boolean visible;
-	
+    //THe backpointer object will not be populated while marshing object, in this case chidren.parent is pointed it back to this object
+	//http://blog.bdoughan.com/2013/03/moxys-xmlinversereference-is-now-truly.html
     @Persistent(mappedBy = "parent")
+    @XmlInverseReference(mappedBy = "parent")
 	private Set<Node> children;
 
     @Persistent
@@ -176,6 +178,7 @@ public abstract class Node extends AbstractEntity implements StoreCallback {
 		JDOInstanceCallbacksUtil.populateEntityFields(this);
 	}
 	
+	@XmlTransient
 	public Node getParent() {
 		return parent;
 	}
@@ -203,12 +206,16 @@ public abstract class Node extends AbstractEntity implements StoreCallback {
 		this.displayOrder = displayOrder;
 	}
 
-
-
+	
 	public Long getParentId() {
-		return parentId;
-	}
+	
+		if (this.parentId != null) {
+			return this.parentId;
+		} else {
 
+			return this.getParent().getId();
+		}
+	}
 	
 
 	public String getCode() {
