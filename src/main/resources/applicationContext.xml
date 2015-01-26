@@ -59,7 +59,7 @@
 					<prop key="javax.jdo.PersistenceManagerFactoryClass">org.datanucleus.api.jdo.JDOPersistenceManagerFactory</prop>
 					<prop key="javax.jdo.option.ConnectionURL">jdbc:mysql://localhost:3306/marketplace</prop>
 					<prop key="javax.jdo.option.ConnectionUserName">root</prop>
-					<prop key="javax.jdo.option.ConnectionPassword">password</prop>
+					<prop key="javax.jdo.option.ConnectionPassword">root</prop>
 					<prop key="datanucleus.autoCreateSchema">true</prop>
 					<prop key="javax.jdo.option.ConnectionDriverName">com.mysql.jdbc.Driver</prop>
 				</props>
