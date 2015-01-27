@@ -209,12 +209,11 @@ public abstract class Node extends AbstractEntity implements StoreCallback {
 	
 	public Long getParentId() {
 	
-		if (this.parentId != null) {
-			return this.parentId;
-		} else {
-
+		
+		if(this.getParent()!=null){
 			return this.getParent().getId();
 		}
+		return this.parentId; 
 	}
 	
 
